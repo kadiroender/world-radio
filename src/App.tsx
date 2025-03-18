@@ -9,7 +9,8 @@ import {
   ThemeProvider,
   createTheme,
   Paper,
-  Divider
+  Divider,
+  CircularProgress
 } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -63,6 +64,7 @@ interface WeatherData {
 function App() {
   const [stations, setStations] = useState<RadioStation[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(true);
   const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -95,6 +97,8 @@ function App() {
       }
     } catch (error) {
       console.error('Error fetching stations:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -145,6 +149,22 @@ function App() {
       setMapCenter([station.geo_lat, station.geo_long]);
     }
   };
+
+  if (loading) {
+    return (
+      <ThemeProvider theme={theme}>
+        <Box sx={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          justifyContent: 'center', 
+          alignItems: 'center',
+          bgcolor: 'background.default'
+        }}>
+          <CircularProgress />
+        </Box>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -235,7 +255,7 @@ function App() {
                         </Typography>
                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
                           <img 
-                            src={`http://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
+                            src={`https://openweathermap.org/img/wn/${weatherData.icon}@2x.png`}
                             alt={weatherData.description}
                             style={{ width: 50, height: 50 }}
                           />
