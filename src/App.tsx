@@ -5,7 +5,6 @@ import {
   Typography, 
   Grid, 
   Box,
-  CircularProgress,
   IconButton,
   ThemeProvider,
   createTheme,
@@ -64,7 +63,6 @@ interface WeatherData {
 function App() {
   const [stations, setStations] = useState<RadioStation[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [loading, setLoading] = useState(false);
   const [currentStation, setCurrentStation] = useState<RadioStation | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
@@ -82,7 +80,6 @@ function App() {
   }, [currentStation]);
 
   const fetchStations = async () => {
-    setLoading(true);
     try {
       const response = await axios.get('https://de1.api.radio-browser.info/json/stations/search', {
         params: {
@@ -99,7 +96,6 @@ function App() {
     } catch (error) {
       console.error('Error fetching stations:', error);
     }
-    setLoading(false);
   };
 
   const fetchWeather = async (city: string) => {
